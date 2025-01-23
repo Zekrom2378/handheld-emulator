@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import Custom_Buttons as cb
+from gba import GBA
 
 ROMS = {"NES":  {"Title": [], "File": []},
         "SNES": {"Title": [], "File": []},
@@ -49,7 +50,7 @@ for key in ROMS:
     # files = os.listdir(ROOT_PATH + '\\' + key.lower())
     files = os.listdir(os.path.join(ROOT_PATH, key.lower()))
     for file in files:
-        ROMS[key]["File"].append(file)
+        ROMS[key]["File"].append(GBA(title_grabber(file), file))
         GAME_COUNT += 1
         ROMS[key]["Title"].append(title_grabber(file))
 
