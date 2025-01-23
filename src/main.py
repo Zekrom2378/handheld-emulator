@@ -4,7 +4,6 @@ from tkinter import *
 from tkinter import ttk
 import Custom_Buttons as cb
 
-
 ROMS = {"NES":  {"Title": [], "File": []},
         "SNES": {"Title": [], "File": []},
         "GB":   {"Title": [], "File": []},
@@ -13,7 +12,7 @@ ROMS = {"NES":  {"Title": [], "File": []},
         "NDS":  {"Title": [], "File": []}}
 
 ROOT_PATH = r"C:\Users\tanne\OneDrive\Desktop\School2024\Python Stuff\EmulatorController"
-# ROOT_PATH = r"/home/zekrom2378/"
+# ROOT_PATH = r"/home/zekrom2378/"    # ROOT_PATH for actual
 
 GAME_COUNT = 0
 BOOK = [[]]
@@ -104,9 +103,6 @@ def display_page(page_num):
         tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=0, sticky="nws")
         tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=3, sticky="nes")
 
-    # footer = tk.Label(frm, text="", pady=2)
-    # footer.grid(row=10, column=0, columnspan=4, sticky="ews")
-
     c = 1
     for game in BOOK[page_num]:
         selection_button(frm, game, c)
@@ -119,44 +115,12 @@ def display_page(page_num):
     back_button.grid(row=9, column=1, sticky="se", pady=3)
 
 
-
-# def selection_button(text, game, row):
-#     selection = cb.Selection_Button(frm, text=text, command=game, anchor="w")
-#     selection.grid(row=row, column=0, columnspan=2, sticky="ew")
-#     return selection
-
 root = Tk()
 root.geometry("800x480")
 # root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
 root.configure(bg="#515b79")
-
-
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
-
-# selection1 = selection_button("First Item", root.destroy, 1)
-# selection2 = selection_button("Second Item", root.destroy, 2)
-# selection3 = selection_button("Third Item", root.destroy, 3)
-# selection4 = selection_button("Fourth Item", root.destroy, 4)
-# selection5 = selection_button("Fifth Item", root.destroy, 5)
-# selection6 = selection_button("Sixth Item", root.destroy, 6)
-# selection7 = selection_button("Seventh Item", root.destroy, 7)
-# selection8 = selection_button("Eighth Item", root.destroy, 8)
-
-PAGE_COUNT = GAME_COUNT // 8
-if GAME_COUNT % 8 > 0:
-    PAGE_COUNT += 1
-# i = 0
-# j = 0
-# for key in ROMS:
-#     if i % 8 == 0 and i != 0:
-#         j += 1
-#
-#
-#
-# for i in range(PAGE_COUNT):
-#     for j in range(GAME_COUNT):
-#         selection_button(ROMS, j+(1-(8*i)))
 
 display_page(PAGE)
 
