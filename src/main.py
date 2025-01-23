@@ -11,8 +11,7 @@ ROMS = {"NES":  {"Title": [], "File": []},
         "GBA":  {"Title": [], "File": []},
         "NDS":  {"Title": [], "File": []}}
 
-ROOT_PATH = r"C:\Users\tanne\OneDrive\Desktop\School2024\Python Stuff\EmulatorController"
-# ROOT_PATH = r"/home/zekrom2378/"    # ROOT_PATH for actual
+ROOT_PATH = os.path.join(os.getcwd(), "roms")
 
 GAME_COUNT = 0
 BOOK = [[]]
@@ -47,8 +46,8 @@ def title_grabber(title):
 
 
 for key in ROMS:
-    files = os.listdir(ROOT_PATH + '\\' + key.lower())
-    # files = os.listdir(ROOT_PATH + '/' + key.lower())
+    # files = os.listdir(ROOT_PATH + '\\' + key.lower())
+    files = os.listdir(os.path.join(ROOT_PATH, key.lower()))
     for file in files:
         ROMS[key]["File"].append(file)
         GAME_COUNT += 1
