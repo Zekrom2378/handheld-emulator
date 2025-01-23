@@ -31,7 +31,7 @@ class Selection_Button(Menu_Button):
         self.config(
             relief=tk.SUNKEN,
             bd=4,
-            font=("Ubuntu", 16),
+            font=("Ubuntu", 14),
             foreground="#99ccff",
             background="#336699",
         )
