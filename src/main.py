@@ -60,13 +60,17 @@ for key in ROMS:
 
 # TODO : Create a function that does need parameters to launch a game specified by the text on the selection button that
 #   is pressed ROM[EMULATOR][TITLE] and ROM[EMULATOR][FILE] should have all info needed
-def play_game():
+def play_game(num):
+    print(BOOK[PAGE][num])
+    for key in ROMS:
+        for name in ROMS[key]["Title"]:
+            print([i for i, x in enumerate(ROMS[key]["Title"]) if x == name])
 
     pass
 
 
 def selection_button(frm, title, row_num):
-    selection = cb.Selection_Button(frm, text=title, command=root.destroy, anchor="w")
+    selection = cb.Selection_Button(frm, text=title, command=lambda: play_game(row_num), anchor="w")
     selection.grid(row=row_num, column=1, columnspan=2, sticky="ew")
 
 
