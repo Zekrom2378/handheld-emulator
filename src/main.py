@@ -1,22 +1,26 @@
 import os
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk
 import Custom_Buttons as cb
 from game import Game
+# import navigation as nv
 
 Emulators = {"nes": "nes file location",
              "snes": "snes file location",
              "gb": "gb file location",
              "gbc": "gbc file location",
              "gba": "gba file location",
-             "nds": "nds file location" }
+             "nds": "nds file location"}
 
 ROOT_PATH = os.path.join(os.getcwd(), "roms")
 
 GAME_COUNT = 0
 BOOK = [[]]
 PAGE = 0
+BUTTONS = []
+PAGE_NUMBER = 0
+DIR_NAV = []
+
 
 def title_grabber(title):
     if len(title.split('.')) > 2:
@@ -46,6 +50,44 @@ def title_grabber(title):
     return title
 
 
+def focus_next(left, right):
+    # global BUTTONS
+    global PAGE_NUMBER
+    if PAGE_NUMBER == 7:
+        if right.focus_get() == '.!frame.!menubutton':
+            if left.focus_get() == '.!frame.!menubutton2':
+                BUTTONS[PAGE_NUMBER].focus_set()
+            else:
+                left.focus_set()
+        else:
+            right.focus_set()
+    else:
+        PAGE_NUMBER += 1
+        BUTTONS[PAGE_NUMBER].focus_set()
+
+
+def focus_previous(left, right):
+    # global BUTTONS
+    global PAGE_NUMBER
+    if PAGE_NUMBER == 0:
+        if left.focus_get() == '.!frame.!menubutton2':
+            if right.focus_get() == '.!frame.!menubutton':
+                PAGE_NUMBER = 7
+                BUTTONS[PAGE_NUMBER].focus_set()
+            else:
+                PAGE_NUMBER = 0
+                right.focus_set()
+        else:
+            right.focus_set()
+    else:
+        PAGE_NUMBER -= 1
+        BUTTONS[PAGE_NUMBER].focus_set()
+
+
+def select_direction_button(button):
+    button.focus_set()
+
+
 for rom_type in Emulators.keys():
     files = os.listdir(os.path.join(ROOT_PATH, rom_type))
     for file in files:
@@ -59,8 +101,9 @@ def play_game(num):
 
 
 def selection_button(frm, title, row_num):
-    selection = cb.Selection_Button(frm, text=title, command=lambda: play_game(row_num), anchor="w")
+    selection = cb.SelectionButton(frm, text=title, command=lambda: play_game(row_num - 1), anchor="w")
     selection.grid(row=row_num, column=1, columnspan=2, sticky="ew")
+    BUTTONS.append(selection)
 
 
 def next_page():
@@ -68,7 +111,7 @@ def next_page():
     PAGE += 1
     if PAGE >= len(BOOK):
         PAGE = 0
-    display_page(PAGE)
+    game_display_page(PAGE)
 
 
 def last_page():
@@ -76,10 +119,10 @@ def last_page():
     PAGE -= 1
     if abs(PAGE) >= len(BOOK):
         PAGE = 0
-    display_page(PAGE)
+    game_display_page(PAGE)
 
 
-def display_page(page_num):
+def game_display_page(page_num):
     frm = tk.Frame(root, bg="#515b79")
     frm.grid(row=0, column=0, sticky="nsew")
 
@@ -96,29 +139,42 @@ def display_page(page_num):
         tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=3, sticky="nes")
 
     game_counter = 1
+    BUTTONS.clear()
     for game in BOOK[page_num]:
         selection_button(frm, game.name, game_counter)
+        if game_counter == 1:
+            BUTTONS[0].focus_set()
         game_counter += 1
 
-    forward_button = cb.Menu_Button(frm, text=">", command=next_page)
+    forward_button = cb.MenuButton(frm, text=">", command=next_page)
     forward_button.grid(row=9, column=2, sticky="sw", pady=3)
+    DIR_NAV.append(forward_button)
 
-    back_button = cb.Menu_Button(frm, text="<", command=last_page)
+    back_button = cb.MenuButton(frm, text="<", command=last_page)
     back_button.grid(row=9, column=1, sticky="se", pady=3)
+    DIR_NAV.append(back_button)
 
 
-root = Tk()
-root.geometry("800x480")
-# root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
-root.configure(bg="#515b79")
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
+def home_display_page():
 
-display_page(PAGE)
+    pass
 
 
 if __name__ == '__main__':
+    root = Tk()
+    root.geometry("800x480")
+    # root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
+    root.configure(bg="#515b79")
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
+
+    game_display_page(PAGE)
+
+    print(BUTTONS)
+    print(PAGE_NUMBER)
+    root.bind("<Right>", lambda event: select_direction_button(DIR_NAV[0]))
+    root.bind("<Left>", lambda event: select_direction_button(DIR_NAV[1]))
+    root.bind("<Down>", lambda event: focus_next(DIR_NAV[1], DIR_NAV[0]))
+    root.bind("<Up>", lambda event: focus_previous(DIR_NAV[1], DIR_NAV[0]))
+
     root.mainloop()
-
-
-

@@ -1,7 +1,7 @@
 import tkinter as tk
 
 
-class Menu_Button(tk.Button):
+class MenuButton(tk.Button):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.config(
@@ -17,15 +17,29 @@ class Menu_Button(tk.Button):
         # Bind Events
         self.bind("<Enter>", self.on_hover)
         self.bind("<Leave>", self.on_leave)
+        self.bind("<FocusIn>", self.on_focus)
+        self.bind("<FocusOut>", self.off_focus)
+        self.focus = False
 
     def on_hover(self, event):
         self.config(background="lightblue")  # Change color on hover
 
     def on_leave(self, event):
-        self.config(background="#3366cc")      # Restore original color
+        if not self.focus:
+            self.config(background="#3366cc")  # Restore original color
+        else:
+            self.config(background="#3366ee")
+
+    def on_focus(self, event):
+        self.focus = True
+        self.config(background="#408df0")
+
+    def off_focus(self, event):
+        self.focus = False
+        self.config(background="#3366cc")
 
 
-class Selection_Button(Menu_Button):
+class SelectionButton(MenuButton):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.config(
@@ -35,9 +49,23 @@ class Selection_Button(Menu_Button):
             foreground="#99ccff",
             background="#336699",
         )
+        self.bind("<FocusIn>", self.on_focus)
+        self.bind("<FocusOut>", self.off_focus)
+        self.focus = False
 
     def on_hover(self, event):
-        self.config(background="#3366ee")
+        self.config(background="#359aee")
+
+    # def on_focus(self, event):
+    #     self.focus = True
+    #     self.config(background="#3366ee")
+    #
+    # def off_focus(self, event):
+    #     self.focus = False
+    #     self.config(background="#336699")
 
     def on_leave(self, event):
-        self.config(background="#336699")
+        if not self.focus:
+            self.config(background="#336699")
+        else:
+            self.config(background="#3366ee")
