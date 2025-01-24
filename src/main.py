@@ -122,10 +122,28 @@ def last_page():
     game_display_page(PAGE)
 
 
+def shutdown():
+    # os.system('shutdown -P now')
+    root.destroy()
+
+
+def home_to_game_page():
+    game_display_page(PAGE)
+
+
+def back_to_home_page():
+    home_display_page()
+
+
+def home_to_settings_page():
+    pass
+
+
 def game_display_page(page_num):
     frm = tk.Frame(root, bg="#515b79")
     frm.grid(row=0, column=0, sticky="nsew")
 
+    frm.columnconfigure(0, weight=0)
     frm.columnconfigure(1, weight=1)
     frm.columnconfigure(2, weight=1)
     frm.rowconfigure(9, weight=1)
@@ -154,9 +172,25 @@ def game_display_page(page_num):
     back_button.grid(row=9, column=1, sticky="se", pady=3)
     DIR_NAV.append(back_button)
 
+    home_button = cb.MenuButton(frm, text="[<-", font=("System", 10), command=back_to_home_page, padx=1)
+    home_button.grid(row=9, column=0, sticky="sw", pady=1, padx=1)
+
 
 def home_display_page():
+    frm = tk.Frame(root, bg="#515b79")
+    frm.grid(row=0, column=0, sticky="nsew")
+    frm.columnconfigure(1, weight=1)
+    frm.rowconfigure(0, weight=1)
+    frm.rowconfigure(4, weight=1)
 
+    home_button = cb.MenuButton(frm, text="View Games", font="System", command=home_to_game_page)
+    home_button.grid(row=1, column=1, pady=5)
+
+    settings_button = cb.MenuButton(frm, text="Settings", command=home_to_settings_page)
+    settings_button.grid(row=2, column=1, pady=5)
+
+    exit_button = cb.MenuButton(frm, text="Shutdown", command=shutdown)
+    exit_button.grid(row=3, column=1, pady=5)
     pass
 
 
@@ -168,7 +202,7 @@ if __name__ == '__main__':
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    game_display_page(PAGE)
+    home_display_page()
 
     print(BUTTONS)
     print(PAGE_NUMBER)
