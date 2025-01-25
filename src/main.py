@@ -18,8 +18,9 @@ GAME_COUNT = 0
 BOOK = [[]]
 PAGE = 0
 BUTTONS = []
-PAGE_NUMBER = 0
+ROW_NUMBER = 0
 DIR_NAV = []
+FOCUSED = None
 
 
 def title_grabber(title):
@@ -50,48 +51,34 @@ def title_grabber(title):
     return title
 
 
-def focus_next(left, right):
-    global PAGE_NUMBER
-    if PAGE_NUMBER == 7:
-        if right.focus_get() == '.!frame.!menubutton':
-            if left.focus_get() == '.!frame.!menubutton2':
-                BUTTONS[PAGE_NUMBER].focus_set()
-            else:
-                left.focus_set()
-        else:
-            right.focus_set()
+def focus_next():
+    global PAGE
+    global ROW_NUMBER
+    if ROW_NUMBER == len(BOOK[PAGE]) - 1:
+        ROW_NUMBER = 0
     else:
-        PAGE_NUMBER += 1
-        BUTTONS[PAGE_NUMBER].focus_set()
+        ROW_NUMBER += 1
+    BUTTONS[ROW_NUMBER].focus_set()
 
 
-def focus_previous(left, right):
-    global PAGE_NUMBER
-    if PAGE_NUMBER == 0:
-        if left.focus_get() == '.!frame.!menubutton2':
-            if right.focus_get() == '.!frame.!menubutton':
-                PAGE_NUMBER = 7
-                BUTTONS[PAGE_NUMBER].focus_set()
-            else:
-                PAGE_NUMBER = 0
-                right.focus_set()
-        else:
-            right.focus_set()
+def focus_previous():
+    global PAGE
+    global ROW_NUMBER
+    if ROW_NUMBER == 0:
+        ROW_NUMBER = len(BOOK[PAGE]) - 1
     else:
-        PAGE_NUMBER -= 1
-        BUTTONS[PAGE_NUMBER].focus_set()
+        ROW_NUMBER -= 1
+    BUTTONS[ROW_NUMBER].focus_set()
 
 
 def select_direction_button(button):
     button.focus_set()
 
 
-for rom_type in Emulators.keys():
-    files = os.listdir(os.path.join(ROOT_PATH, rom_type))
-    for file in files:
-        if len(BOOK[len(BOOK)-1]) >= 8:
-            BOOK.append([])
-        BOOK[len(BOOK)-1].append(Game(title_grabber(file), file, rom_type))
+def select_game():
+    for game in BUTTONS:
+        if game.focus:
+            game.invoke()
 
 
 def play_game(num):
@@ -125,19 +112,21 @@ def shutdown():
     root.destroy()
 
 
-def home_to_game_page():
+def goto_games():
     game_display_page(PAGE)
 
 
-def back_to_home_page():
+def goto_home():
     home_display_page()
 
 
-def home_to_settings_page():
-    pass
+def goto_settings():
+    settings_display_page()
 
 
 def game_display_page(page_num):
+    global ROW_NUMBER
+    ROW_NUMBER = 0
     frm = tk.Frame(root, bg="#515b79")
     frm.grid(row=0, column=0, sticky="nsew")
 
@@ -156,7 +145,6 @@ def game_display_page(page_num):
     game_counter = 1
     BUTTONS.clear()
     for game in BOOK[page_num]:
-        # tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="w").grid(row=0, column=0, sticky="nes")
         tk.Label(frm, text='  ' + game.type.upper() + ' ', font=("System", 12), foreground=game.colorized(), bg="#515b79", border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
         selection_button(frm, game.name, game_counter)
         if game_counter == 1:
@@ -171,8 +159,8 @@ def game_display_page(page_num):
     back_button.grid(row=9, column=1, sticky="se", pady=3)
     DIR_NAV.append(back_button)
 
-    home_button = cb.MenuButton(frm, text="[<-", command=back_to_home_page, padx=2, pady=2)
-    home_button.config(padx=0, pady=10, font=("System", 20))
+    home_button = cb.MenuButton(frm, text="[<-", command=goto_home, padx=2, pady=2)
+    home_button.config(padx=0, font=("System", 18))
     home_button.grid(row=9, column=0, sticky="sw", padx=3, pady=3)
 
 
@@ -183,18 +171,28 @@ def home_display_page():
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
 
-    home_button = cb.MenuButton(frm, text="    View Games    ", font="System", command=home_to_game_page)
+    home_button = cb.MenuButton(frm, text="    View Games    ", font="System", command=goto_games)
     home_button.grid(row=1, column=1, pady=5)
 
-    settings_button = cb.MenuButton(frm, text="    Settings    ", command=home_to_settings_page)
+    settings_button = cb.MenuButton(frm, text="    Settings    ", command=goto_settings)
     settings_button.grid(row=2, column=1, pady=5)
 
     exit_button = cb.MenuButton(frm, text="Shutdown", command=shutdown)
     exit_button.grid(row=3, column=1, pady=5)
+
+
+def settings_display_page():
     pass
 
 
 if __name__ == '__main__':
+    for rom_type in Emulators.keys():
+        files = os.listdir(os.path.join(ROOT_PATH, rom_type))
+        for file in files:
+            if len(BOOK[len(BOOK) - 1]) >= 8:
+                BOOK.append([])
+            BOOK[len(BOOK) - 1].append(Game(title_grabber(file), file, rom_type))
+
     root = Tk()
     root.geometry("800x480")
     # root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
@@ -205,10 +203,11 @@ if __name__ == '__main__':
     home_display_page()
 
     print(BUTTONS)
-    print(PAGE_NUMBER)
-    root.bind("<Right>", lambda event: select_direction_button(DIR_NAV[0]))
-    root.bind("<Left>", lambda event: select_direction_button(DIR_NAV[1]))
-    root.bind("<Down>", lambda event: focus_next(DIR_NAV[1], DIR_NAV[0]))
-    root.bind("<Up>", lambda event: focus_previous(DIR_NAV[1], DIR_NAV[0]))
+    print(ROW_NUMBER)
+    root.bind("<Right>", lambda event: next_page())
+    root.bind("<Left>", lambda event: last_page())
+    root.bind("<Down>", lambda event: focus_next())
+    root.bind("<Up>", lambda event: focus_previous())
+    root.bind("<a>", lambda event: select_game())
 
     root.mainloop()

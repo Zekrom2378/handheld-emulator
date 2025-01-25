@@ -38,7 +38,7 @@ class MenuButton(tk.Button):
 
     def off_focus(self, event):
         self.focus = False
-        self.config(background="#3366ee")
+        self.config(background="#3366cc")
 
 
 class SelectionButton(MenuButton):
@@ -58,13 +58,13 @@ class SelectionButton(MenuButton):
     def on_hover(self, event):
         self.config(background="#359aee")
 
-    # def on_focus(self, event):
-    #     self.focus = True
-    #     self.config(background="#3366ee")
-    #
-    # def off_focus(self, event):
-    #     self.focus = False
-    #     self.config(background="#336699")
+    def on_focus(self, event):
+        self.focus = True
+        self.config(background="#3366ee")
+
+    def off_focus(self, event):
+        self.focus = False
+        self.config(background="#336699")
 
     def on_leave(self, event):
         if not self.focus:

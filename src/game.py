@@ -1,5 +1,6 @@
 import os
 
+
 class Game:
     def __init__(self, name, file, type):
         self.name = name
