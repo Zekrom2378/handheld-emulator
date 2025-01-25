@@ -38,7 +38,7 @@ class MenuButton(tk.Button):
 
     def off_focus(self, event):
         self.focus = False
-        self.config(background="#3366cc")
+        self.config(background="#3366ee")
 
 
 class SelectionButton(MenuButton):

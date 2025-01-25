@@ -51,7 +51,6 @@ def title_grabber(title):
 
 
 def focus_next(left, right):
-    # global BUTTONS
     global PAGE_NUMBER
     if PAGE_NUMBER == 7:
         if right.focus_get() == '.!frame.!menubutton':
@@ -67,7 +66,6 @@ def focus_next(left, right):
 
 
 def focus_previous(left, right):
-    # global BUTTONS
     global PAGE_NUMBER
     if PAGE_NUMBER == 0:
         if left.focus_get() == '.!frame.!menubutton2':
@@ -149,7 +147,7 @@ def game_display_page(page_num):
     frm.rowconfigure(9, weight=1)
     frm.rowconfigure(10, weight=0)
 
-    header = tk.Label(frm, text="       Select A Game", font=("System", 16), foreground="black", anchor="w", border=5)
+    header = tk.Label(frm, text="System  |  Select A Game", font=("System", 16), foreground="black", anchor="w", border=5)
     header.grid(row=0, column=0, columnspan=3, sticky="new")
 
     for num in range(10):
@@ -158,8 +156,8 @@ def game_display_page(page_num):
     game_counter = 1
     BUTTONS.clear()
     for game in BOOK[page_num]:
-        tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="w").grid(row=0, column=0, sticky="nes")
-        tk.Label(frm, text='   ' + game.type.upper(), font=("System", 12), foreground=game.colorized(), bg="#515b79", border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
+        # tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="w").grid(row=0, column=0, sticky="nes")
+        tk.Label(frm, text='  ' + game.type.upper() + ' ', font=("System", 12), foreground=game.colorized(), bg="#515b79", border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
         selection_button(frm, game.name, game_counter)
         if game_counter == 1:
             BUTTONS[0].focus_set()
@@ -173,8 +171,9 @@ def game_display_page(page_num):
     back_button.grid(row=9, column=1, sticky="se", pady=3)
     DIR_NAV.append(back_button)
 
-    home_button = cb.MenuButton(frm, text="[<-", font=("System", 8), command=back_to_home_page, padx=1, pady=1, bd=0)
-    home_button.grid(row=9, column=0, sticky="sw", pady=1, padx=1)
+    home_button = cb.MenuButton(frm, text="[<-", command=back_to_home_page, padx=2, pady=2)
+    home_button.config(padx=0, pady=10, font=("System", 20))
+    home_button.grid(row=9, column=0, sticky="sw", padx=3, pady=3)
 
 
 def home_display_page():
