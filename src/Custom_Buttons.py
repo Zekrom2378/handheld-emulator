@@ -5,14 +5,16 @@ class MenuButton(tk.Button):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.config(
-            relief=tk.RIDGE,         # Changes Button relief
-            bd=3,                     # Removes Border at 0
-            highlightthickness=0,     # Removes Highlight at 0
-            padx=10,                  # Changes Horizontal Padding
-            pady=5,                   # Changes Vertical Padding
+            relief=tk.RIDGE,             # Changes Button relief
+            bd=3,                        # Removes Border at 0
+            highlightthickness=0,        # Removes Highlight at 0
+            padx=10,                     # Changes Horizontal Padding
+            pady=5,                      # Changes Vertical Padding
             font=("Terminal", 18),       # Sets the Font
-            foreground="white",       # Sets the Text Color
-            background="#3366cc",     # Sets the background color
+            foreground="white",          # Sets the Text Color
+            background="#3366cc",        # Sets the background color
+            activebackground="#3366cc",  # Sets the background color while it is clicked
+            activeforeground="white",    # Sets the text color while it is clicked
         )
         # Bind Events
         self.bind("<Enter>", self.on_hover)

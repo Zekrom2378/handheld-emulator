@@ -144,8 +144,8 @@ def game_display_page(page_num):
     frm.grid(row=0, column=0, sticky="nsew")
 
     frm.columnconfigure(0, weight=0)
-    frm.columnconfigure(1, weight=1)
-    frm.columnconfigure(2, weight=1)
+    frm.columnconfigure(1, weight=5)
+    frm.columnconfigure(2, weight=5)
     frm.rowconfigure(9, weight=1)
     frm.rowconfigure(10, weight=0)
 
@@ -153,12 +153,13 @@ def game_display_page(page_num):
     header.grid(row=0, column=0, columnspan=3, sticky="new")
 
     for num in range(10):
-        tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=0, sticky="nws")
         tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=3, sticky="nes")
 
     game_counter = 1
     BUTTONS.clear()
     for game in BOOK[page_num]:
+        tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="w").grid(row=0, column=0, sticky="nes")
+        tk.Label(frm, text='   ' + game.type.upper(), font=("System", 12), foreground=game.colorized(), bg="#515b79", border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
         selection_button(frm, game.name, game_counter)
         if game_counter == 1:
             BUTTONS[0].focus_set()
@@ -172,7 +173,7 @@ def game_display_page(page_num):
     back_button.grid(row=9, column=1, sticky="se", pady=3)
     DIR_NAV.append(back_button)
 
-    home_button = cb.MenuButton(frm, text="[<-", font=("System", 10), command=back_to_home_page, padx=1)
+    home_button = cb.MenuButton(frm, text="[<-", font=("System", 8), command=back_to_home_page, padx=1, pady=1, bd=0)
     home_button.grid(row=9, column=0, sticky="sw", pady=1, padx=1)
 
 
@@ -183,10 +184,10 @@ def home_display_page():
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
 
-    home_button = cb.MenuButton(frm, text="View Games", font="System", command=home_to_game_page)
+    home_button = cb.MenuButton(frm, text="    View Games    ", font="System", command=home_to_game_page)
     home_button.grid(row=1, column=1, pady=5)
 
-    settings_button = cb.MenuButton(frm, text="Settings", command=home_to_settings_page)
+    settings_button = cb.MenuButton(frm, text="    Settings    ", command=home_to_settings_page)
     settings_button.grid(row=2, column=1, pady=5)
 
     exit_button = cb.MenuButton(frm, text="Shutdown", command=shutdown)
