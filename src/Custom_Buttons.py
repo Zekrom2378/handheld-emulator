@@ -23,6 +23,14 @@ class MenuButton(tk.Button):
         self.bind("<FocusOut>", self.off_focus)
         self.focus = False
 
+    def on_focus(self, event):
+        self.focus = True
+        self.config(background="#408df0")
+
+    def off_focus(self, event):
+        self.focus = False
+        self.config(background="#3366cc")
+
     def on_hover(self, event):
         self.config(background="lightblue")  # Change color on hover
 
@@ -31,14 +39,6 @@ class MenuButton(tk.Button):
             self.config(background="#3366cc")  # Restore original color
         else:
             self.config(background="#3366ee")
-
-    def on_focus(self, event):
-        self.focus = True
-        self.config(background="#408df0")
-
-    def off_focus(self, event):
-        self.focus = False
-        self.config(background="#3366cc")
 
 
 class SelectionButton(MenuButton):
@@ -51,12 +51,6 @@ class SelectionButton(MenuButton):
             foreground="#99ccff",
             background="#336699",
         )
-        self.bind("<FocusIn>", self.on_focus)
-        self.bind("<FocusOut>", self.off_focus)
-        self.focus = False
-
-    def on_hover(self, event):
-        self.config(background="#359aee")
 
     def on_focus(self, event):
         self.focus = True
@@ -65,6 +59,9 @@ class SelectionButton(MenuButton):
     def off_focus(self, event):
         self.focus = False
         self.config(background="#336699")
+
+    def on_hover(self, event):
+        self.config(background="#359aee")
 
     def on_leave(self, event):
         if not self.focus:

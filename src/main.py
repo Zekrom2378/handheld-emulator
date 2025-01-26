@@ -20,7 +20,7 @@ PAGE = 0
 BUTTONS = []
 ROW_NUMBER = 0
 DIR_NAV = []
-FOCUSED = None
+DISPLAY_STATE = 0                                                    # 0 - Home, 1 - View Games, 2 - Settings, 3 -TBD
 
 
 def title_grabber(title):
@@ -51,10 +51,30 @@ def title_grabber(title):
     return title
 
 
+def row_global_reset():
+    global ROW_NUMBER
+    ROW_NUMBER = 0
+
+
+def number_of_rows_on_page():
+    global DISPLAY_STATE
+    rows = 0
+    if DISPLAY_STATE == 0:
+        rows = 3
+    if DISPLAY_STATE == 1:
+        rows = len(BOOK[PAGE])
+    if DISPLAY_STATE == 2:
+        pass
+    return rows
+
+
 def focus_next():
     global PAGE
     global ROW_NUMBER
-    if ROW_NUMBER == len(BOOK[PAGE]) - 1:
+    global DISPLAY_STATE
+    max_rows = number_of_rows_on_page()
+
+    if ROW_NUMBER == max_rows - 1:
         ROW_NUMBER = 0
     else:
         ROW_NUMBER += 1
@@ -64,20 +84,30 @@ def focus_next():
 def focus_previous():
     global PAGE
     global ROW_NUMBER
+    global DISPLAY_STATE
+    max_rows = number_of_rows_on_page()
+
     if ROW_NUMBER == 0:
-        ROW_NUMBER = len(BOOK[PAGE]) - 1
+        ROW_NUMBER = max_rows - 1
     else:
         ROW_NUMBER -= 1
     BUTTONS[ROW_NUMBER].focus_set()
 
 
-def select_direction_button(button):
+def quick_select_button(button):
+    global ROW_NUMBER
+    if button.focus:
+
+        button.invoke()
+        return
     button.focus_set()
+    ROW_NUMBER = number_of_rows_on_page() - 1
 
 
 def select_game():
     for game in BUTTONS:
         if game.focus:
+            game.config(activebackground="#3366cc",  activeforeground="white")
             game.invoke()
 
 
@@ -125,8 +155,16 @@ def goto_settings():
 
 
 def game_display_page(page_num):
-    global ROW_NUMBER
-    ROW_NUMBER = 0
+    global DISPLAY_STATE
+    DISPLAY_STATE = 1
+    row_global_reset()
+    root.unbind("<Right>")
+    root.unbind("<Left>")
+    root.unbind("<b>")
+
+    root.bind("<Right>", lambda event: next_page())
+    root.bind("<Left>", lambda event: last_page())
+
     frm = tk.Frame(root, bg="#515b79")
     frm.grid(row=0, column=0, sticky="nsew")
 
@@ -163,25 +201,42 @@ def game_display_page(page_num):
     home_button.config(padx=0, font=("System", 18))
     home_button.grid(row=9, column=0, sticky="sw", padx=3, pady=3)
 
+    root.bind("<b>", lambda event: quick_select_button(home_button))
+
 
 def home_display_page():
+    global DISPLAY_STATE
+    DISPLAY_STATE = 0
+    row_global_reset()
+    root.unbind("<b>")
     frm = tk.Frame(root, bg="#515b79")
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(1, weight=1)
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
+    BUTTONS.clear()
 
     home_button = cb.MenuButton(frm, text="    View Games    ", font="System", command=goto_games)
     home_button.grid(row=1, column=1, pady=5)
+    BUTTONS.append(home_button)
 
     settings_button = cb.MenuButton(frm, text="    Settings    ", command=goto_settings)
     settings_button.grid(row=2, column=1, pady=5)
+    BUTTONS.append(settings_button)
 
     exit_button = cb.MenuButton(frm, text="Shutdown", command=shutdown)
     exit_button.grid(row=3, column=1, pady=5)
+    BUTTONS.append(exit_button)
+
+    BUTTONS[0].focus_set()
+
+    root.bind("<b>", lambda event: quick_select_button(exit_button))
 
 
 def settings_display_page():
+    global DISPLAY_STATE
+    DISPLAY_STATE = 2
+    row_global_reset()
     pass
 
 
@@ -202,10 +257,8 @@ if __name__ == '__main__':
 
     home_display_page()
 
-    print(BUTTONS)
-    print(ROW_NUMBER)
-    root.bind("<Right>", lambda event: next_page())
-    root.bind("<Left>", lambda event: last_page())
+    # root.bind("<Right>", lambda event: next_page())
+    # root.bind("<Left>", lambda event: last_page())
     root.bind("<Down>", lambda event: focus_next())
     root.bind("<Up>", lambda event: focus_previous())
     root.bind("<a>", lambda event: select_game())

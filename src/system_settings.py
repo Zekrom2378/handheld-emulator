@@ -10,3 +10,9 @@ class SystemTime:
         self.year = year
         self.hour = hour
         self.minute = minute
+
+
+class SystemTheme:
+    def __init__(self, bg, sel_text, menu_text, menu_button, sel_button):
+        pass
+
