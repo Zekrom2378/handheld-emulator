@@ -25,10 +25,10 @@ ROW_NUMBER = 0
 DIR_NAV = []
 DISPLAY_STATE = 0       # 0 - Home, 1 - View Games, 2 - Settings, 3 -Themes, 4 - Date/Time, 5 - TBD
 #         [ Theme Name    | Background | Game Sel Text | Game Sel Button | Game Sel HiLi | Menu Text | Menu Button | Menu HiLi]
-THEMES = [["Samurott",      "#0F3057",     "#001219",       "#3A5F78",       "#A88F32",    "#FFD166",  "#005F73",   "#007EA7"],
+THEMES = [["Samurott",      "#0F3057",     "#FFD166",       "#3A5F78",       "#A88F32",    "#FFD166",  "#005F73",   "#007EA7"],
           ["Emboar",        "#5E120D",     "#FFEB3B",       "#212121",       "#EE8700",    "#FFC400",  "#B71C1C",   "#e65100"],
-          ["Serperior",     "#184A27",     "#1B1B1B",       "#5B7553",       "#FFD700",    "#F9A825",  "#2E7D32",   "#4CAF50"],
-          ["Haxorus",       "#2E3B3A",     "#801f12",       "#5B734D",       "#99D6A1",    "#F5F5F5",  "#4C6A5E",   "#7F9B8B"],
+          ["Serperior",     "#184A27",     "#F9A825",       "#5B7553",       "#FFD700",    "#F9A825",  "#2E7D32",   "#4CAF50"],
+          ["Haxorus",       "#2E3B3A",     "#F5F5F5",       "#5B734D",       "#99D6A1",    "#F5F5F5",  "#801f12",   "#6F35FC"],
           ["Altaria",       "#A0C8E5",     "#FFFFFF",       "#4F9CB9",       "#7EC8D3",    "#FFFFFF",  "#3A8FBF",   "#5DA9D7"],
           ["Gengar",        "#3A3A3D",     "#E9E9E9",       "#7A4E8D",       "#B799E6",    "#E9E9E9",  "#6A4C9C",   "#8E62B3"],
           ["Zoroark",       "#2A2A2A",     "#F0F0F0",       "#5E5E5E",       "#9E2A2A",    "#D1D1D1",  "#7C2B2B",   "#9E4A4A"],
@@ -39,8 +39,11 @@ THEMES = [["Samurott",      "#0F3057",     "#001219",       "#3A5F78",       "#A
 
 
 def theme_writer(number):
-    with open(os.path.join("resources" + "THEME#.txt"), "w") as file:
-        file.write(str(number))
+    global THEME_NUMBER
+    with open(os.path.join(RESOURCE_PATH + "THEME#.txt"), "w") as file:
+        file.write(f"{number}")
+        print(f"wrote {number} to file")
+    THEME_NUMBER = theme_reader()
 
 
 def theme_reader():
@@ -89,6 +92,8 @@ def number_of_rows_on_page():
     if DISPLAY_STATE == 1:
         rows = len(BOOK[PAGE])
     if DISPLAY_STATE == 2:
+        rows = 3
+    if DISPLAY_STATE == 3:
         pass
     return rows
 
@@ -186,6 +191,10 @@ def goto_themes():
     pass
 
 
+def goto_calibrate():
+    pass
+
+
 def game_display_page(page_num):
     global DISPLAY_STATE
     DISPLAY_STATE = 1
@@ -241,6 +250,8 @@ def home_display_page():
     DISPLAY_STATE = 0
     row_global_reset()
     root.unbind("<b>")
+    root.unbind("<Right>")
+    root.unbind("<Left>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(1, weight=1)
@@ -270,23 +281,35 @@ def settings_display_page():
     DISPLAY_STATE = 2
     row_global_reset()
     root.unbind("<b>")
+    root.unbind("<Right>")
+    root.unbind("<Left>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
+    frm.columnconfigure(0, weight=1)
     frm.columnconfigure(1, weight=1)
+    frm.columnconfigure(2, weight=1)
+    frm.columnconfigure(3, weight=1)
+    frm.columnconfigure(4, weight=1)
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
     BUTTONS.clear()
 
     header = tk.Label(frm, text="System Settings", font=("System", 16), foreground="black", anchor="n", border=5)
-    header.grid(row=0, column=0, columnspan=3, sticky="new")
+    header.grid(row=0, column=0, columnspan=7, sticky="new")
 
-    time_button = cb.MenuButton(frm, text="Time", command=goto_time)
-    time_button.grid(row=3, column=1, sticky="se", pady=3)
+
+    time_button = cb.MenuButton(frm, text="   Time   ", command=goto_time)
+    time_button.grid(row=3, column=1, pady=3, padx=5)
+    time_button.focus_set()
     BUTTONS.append(time_button)
 
-    theme_button = cb.MenuButton(frm, text="Colors", command=goto_themes())
-    theme_button.grid(row=3, column=2, sticky="s", pady=3)
+    theme_button = cb.MenuButton(frm, text="  Colors  ", command=goto_themes)
+    theme_button.grid(row=3, column=2, pady=3, padx=5)
     BUTTONS.append(theme_button)
+
+    calibration_button = cb.MenuButton(frm, text="Calibrate", anchor="center", command=goto_calibrate)
+    calibration_button.grid(row=3, column=3, pady=3, padx=5)
+    BUTTONS.append(calibration_button)
 
 
 
@@ -317,5 +340,6 @@ if __name__ == '__main__':
     root.bind("<Down>", lambda event: focus_next())
     root.bind("<Up>", lambda event: focus_previous())
     root.bind("<a>", lambda event: select_game())
+    root.bind("<f>", lambda event: theme_writer(5))
 
     root.mainloop()
