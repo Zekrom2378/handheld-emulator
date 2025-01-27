@@ -79,6 +79,7 @@ def focus_next():
     else:
         ROW_NUMBER += 1
     BUTTONS[ROW_NUMBER].focus_set()
+    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def focus_previous():
@@ -92,6 +93,7 @@ def focus_previous():
     else:
         ROW_NUMBER -= 1
     BUTTONS[ROW_NUMBER].focus_set()
+    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def quick_select_button(button):
@@ -102,12 +104,14 @@ def quick_select_button(button):
         return
     button.focus_set()
     ROW_NUMBER = number_of_rows_on_page() - 1
+    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def select_game():
     for game in BUTTONS:
         if game.focus:
-            game.config(activebackground="#3366cc",  activeforeground="white")
+            # game.config(activebackground="#3366cc",  activeforeground="white")
+            game.config(activebackground="red",  activeforeground="black")
             game.invoke()
 
 
@@ -152,6 +156,14 @@ def goto_home():
 
 def goto_settings():
     settings_display_page()
+
+
+def goto_time():
+    pass
+
+
+def goto_themes():
+    pass
 
 
 def game_display_page(page_num):
@@ -237,6 +249,27 @@ def settings_display_page():
     global DISPLAY_STATE
     DISPLAY_STATE = 2
     row_global_reset()
+    root.unbind("<b>")
+    frm = tk.Frame(root, bg="#515b79")
+    frm.grid(row=0, column=0, sticky="nsew")
+    frm.columnconfigure(1, weight=1)
+    frm.rowconfigure(0, weight=1)
+    frm.rowconfigure(4, weight=1)
+    BUTTONS.clear()
+
+    header = tk.Label(frm, text="System Settings", font=("System", 16), foreground="black", anchor="n", border=5)
+    header.grid(row=0, column=0, columnspan=3, sticky="new")
+
+    time_button = cb.MenuButton(frm, text="Time", command=goto_time)
+    time_button.grid(row=3, column=1, sticky="se", pady=3)
+    BUTTONS.append(time_button)
+
+    theme_button = cb.MenuButton(frm, text="Colors", command=goto_themes())
+    theme_button.grid(row=3, column=2, sticky="s", pady=3)
+    BUTTONS.append(theme_button)
+
+
+
     pass
 
 
