@@ -5,22 +5,47 @@ import Custom_Buttons as cb
 from game import Game
 # import navigation as nv
 
+"""
+THESE ARE GLOBAL VARIABLES MADE FOR STORING INFORMATION DURING THE PROGRAM
+"""
 Emulators = {"nes": "nes file location",
              "snes": "snes file location",
              "gb": "gb file location",
              "gbc": "gbc file location",
              "gba": "gba file location",
              "nds": "nds file location"}
-
-ROOT_PATH = os.path.join(os.getcwd(), "roms")
-
+ROOT_PATH = os.path.join(os.getcwd())
+ROM_PATH = os.path.join(ROOT_PATH, "roms")
+RESOURCE_PATH = os.path.join(ROOT_PATH, "resources")
 GAME_COUNT = 0
 BOOK = [[]]
 PAGE = 0
 BUTTONS = []
 ROW_NUMBER = 0
 DIR_NAV = []
-DISPLAY_STATE = 0                                                    # 0 - Home, 1 - View Games, 2 - Settings, 3 -TBD
+DISPLAY_STATE = 0       # 0 - Home, 1 - View Games, 2 - Settings, 3 -Themes, 4 - Date/Time, 5 - TBD
+#         [ Theme Name    | Background | Game Sel Text | Game Sel Button | Game Sel HiLi | Menu Text | Menu Button | Menu HiLi]
+THEMES = [["Samurott",      "#0F3057",     "#001219",       "#3A5F78",       "#A88F32",    "#FFD166",  "#005F73",   "#007EA7"],
+          ["Emboar",        "#5E120D",     "#FFEB3B",       "#212121",       "#EE8700",    "#FFC400",  "#B71C1C",   "#e65100"],
+          ["Serperior",     "#184A27",     "#1B1B1B",       "#5B7553",       "#FFD700",    "#F9A825",  "#2E7D32",   "#4CAF50"],
+          ["Haxorus",       "#2E3B3A",     "#801f12",       "#5B734D",       "#99D6A1",    "#F5F5F5",  "#4C6A5E",   "#7F9B8B"],
+          ["Altaria",       "#A0C8E5",     "#FFFFFF",       "#4F9CB9",       "#7EC8D3",    "#FFFFFF",  "#3A8FBF",   "#5DA9D7"],
+          ["Gengar",        "#3A3A3D",     "#E9E9E9",       "#7A4E8D",       "#B799E6",    "#E9E9E9",  "#6A4C9C",   "#8E62B3"],
+          ["Zoroark",       "#2A2A2A",     "#F0F0F0",       "#5E5E5E",       "#9E2A2A",    "#D1D1D1",  "#7C2B2B",   "#9E4A4A"],
+          ["Diglett",       "#5D3D2E",     "#F0E8C0",       "#6B4A2D",       "#B48433",    "#F0E8C0",  "#7A5C41",   "#9E7B54"],
+          ["Zekrom",        "#0D0D0D",     "#E0E0E0",       "#1F2833",       "#0B8FAC",    "#76D7EA",  "#292929",   "#3D3D3D"],
+          ["Reshiram",      "#F8F8F8",     "#3B1C14",       "#FAE6C8",       "#FF9F33",    "#D96629",  "#E3E3E3",   "#CFCFCF"]
+          ]
+
+
+def theme_writer(number):
+    with open(os.path.join("resources" + "THEME#.txt"), "w") as file:
+        file.write(str(number))
+
+
+def theme_reader():
+    with open(os.path.join(RESOURCE_PATH, "THEME#.txt"), 'r') as file:
+        return int(file.readline()) % len(THEMES)
 
 
 def title_grabber(title):
@@ -79,7 +104,6 @@ def focus_next():
     else:
         ROW_NUMBER += 1
     BUTTONS[ROW_NUMBER].focus_set()
-    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def focus_previous():
@@ -92,8 +116,9 @@ def focus_previous():
         ROW_NUMBER = max_rows - 1
     else:
         ROW_NUMBER -= 1
+    if not BUTTONS[ROW_NUMBER].focus_get() in BUTTONS:
+        ROW_NUMBER = max_rows - 1
     BUTTONS[ROW_NUMBER].focus_set()
-    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def quick_select_button(button):
@@ -104,15 +129,10 @@ def quick_select_button(button):
         return
     button.focus_set()
     ROW_NUMBER = number_of_rows_on_page() - 1
-    print(BUTTONS[ROW_NUMBER].focus_get())
 
 
 def select_game():
-    for game in BUTTONS:
-        if game.focus:
-            # game.config(activebackground="#3366cc",  activeforeground="white")
-            game.config(activebackground="red",  activeforeground="black")
-            game.invoke()
+    BUTTONS[ROW_NUMBER].focus_get().invoke()
 
 
 def play_game(num):
@@ -177,7 +197,7 @@ def game_display_page(page_num):
     root.bind("<Right>", lambda event: next_page())
     root.bind("<Left>", lambda event: last_page())
 
-    frm = tk.Frame(root, bg="#515b79")
+    frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
 
     frm.columnconfigure(0, weight=0)
@@ -190,12 +210,12 @@ def game_display_page(page_num):
     header.grid(row=0, column=0, columnspan=3, sticky="new")
 
     for num in range(10):
-        tk.Label(frm, text='_', foreground="#515b79", bg="#515b79", border=0, anchor="e").grid(row=num, column=3, sticky="nes")
+        tk.Label(frm, text='_', foreground=THEMES[THEME_NUMBER][1], bg=THEMES[THEME_NUMBER][1], border=0, anchor="e").grid(row=num, column=3, sticky="nes")
 
     game_counter = 1
     BUTTONS.clear()
     for game in BOOK[page_num]:
-        tk.Label(frm, text='  ' + game.type.upper() + ' ', font=("System", 12), foreground=game.colorized(), bg="#515b79", border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
+        tk.Label(frm, text='  ' + game.type.upper() + ' ', font=("System", 12), foreground=game.colorized(), bg=THEMES[THEME_NUMBER][1], border=1, anchor="center").grid(row=game_counter, column=0, sticky="nws")
         selection_button(frm, game.name, game_counter)
         if game_counter == 1:
             BUTTONS[0].focus_set()
@@ -221,14 +241,14 @@ def home_display_page():
     DISPLAY_STATE = 0
     row_global_reset()
     root.unbind("<b>")
-    frm = tk.Frame(root, bg="#515b79")
+    frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(1, weight=1)
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
     BUTTONS.clear()
 
-    home_button = cb.MenuButton(frm, text="    View Games    ", font="System", command=goto_games)
+    home_button = cb.MenuButton(frm, text="    View Games    ", command=goto_games)
     home_button.grid(row=1, column=1, pady=5)
     BUTTONS.append(home_button)
 
@@ -250,7 +270,7 @@ def settings_display_page():
     DISPLAY_STATE = 2
     row_global_reset()
     root.unbind("<b>")
-    frm = tk.Frame(root, bg="#515b79")
+    frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(1, weight=1)
     frm.rowconfigure(0, weight=1)
@@ -274,8 +294,10 @@ def settings_display_page():
 
 
 if __name__ == '__main__':
+    THEME_NUMBER = theme_reader()
+
     for rom_type in Emulators.keys():
-        files = os.listdir(os.path.join(ROOT_PATH, rom_type))
+        files = os.listdir(os.path.join(ROM_PATH, rom_type))
         for file in files:
             if len(BOOK[len(BOOK) - 1]) >= 8:
                 BOOK.append([])
@@ -284,7 +306,7 @@ if __name__ == '__main__':
     root = Tk()
     root.geometry("800x480")
     # root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
-    root.configure(bg="#515b79")
+    root.configure(bg=THEMES[THEME_NUMBER][1])
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
