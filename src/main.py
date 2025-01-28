@@ -201,6 +201,8 @@ def game_display_page(page_num):
     row_global_reset()
     root.unbind("<Right>")
     root.unbind("<Left>")
+    root.unbind("<Up>")
+    root.unbind("<Down>")
     root.unbind("<b>")
 
     root.bind("<Right>", lambda event: next_page())
@@ -239,8 +241,11 @@ def game_display_page(page_num):
     DIR_NAV.append(back_button)
 
     home_button = cb.MenuButton(frm, text="[<-", command=goto_home, padx=2, pady=2)
-    home_button.config(padx=0, font=("System", 18))
+    home_button.config(padx=0, pady=0, font=("System", 18))
     home_button.grid(row=9, column=0, sticky="sw", padx=3, pady=3)
+
+    root.bind("<Down>", lambda event: focus_next())
+    root.bind("<Up>", lambda event: focus_previous())
 
     root.bind("<b>", lambda event: quick_select_button(home_button))
 
@@ -252,6 +257,8 @@ def home_display_page():
     root.unbind("<b>")
     root.unbind("<Right>")
     root.unbind("<Left>")
+    root.unbind("<Up>")
+    root.unbind("<Down>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(1, weight=1)
@@ -272,6 +279,8 @@ def home_display_page():
     BUTTONS.append(exit_button)
 
     BUTTONS[0].focus_set()
+    root.bind("<Down>", lambda event: focus_next())
+    root.bind("<Up>", lambda event: focus_previous())
 
     root.bind("<b>", lambda event: quick_select_button(exit_button))
 
@@ -283,6 +292,8 @@ def settings_display_page():
     root.unbind("<b>")
     root.unbind("<Right>")
     root.unbind("<Left>")
+    root.unbind("<Up>")
+    root.unbind("<Down>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(0, weight=1)
@@ -297,7 +308,6 @@ def settings_display_page():
     header = tk.Label(frm, text="System Settings", font=("System", 16), foreground="black", anchor="n", border=5)
     header.grid(row=0, column=0, columnspan=7, sticky="new")
 
-
     time_button = cb.MenuButton(frm, text="   Time   ", command=goto_time)
     time_button.grid(row=3, column=1, pady=3, padx=5)
     time_button.focus_set()
@@ -311,9 +321,47 @@ def settings_display_page():
     calibration_button.grid(row=3, column=3, pady=3, padx=5)
     BUTTONS.append(calibration_button)
 
+    home_button = cb.MenuButton(frm, text="[<-", command=goto_home, padx=2, pady=2)
+    home_button.config(padx=0, pady=0, font=("System", 18))
+    home_button.grid(row=4, column=0, sticky="sw", padx=3, pady=1)
 
+    invis_button = cb.MenuButton(frm, text="[<-", command=None, padx=2, pady=2)
+    invis_button.config(padx=0, pady=0, relief=tk.FLAT, background=THEMES[THEME_NUMBER][1], font=("System", 18),
+                        activebackground=THEMES[THEME_NUMBER][1], foreground=THEMES[THEME_NUMBER][1],
+                        activeforeground=THEMES[THEME_NUMBER][1])
+    invis_button.grid(row=4, column=4, sticky="se", padx=3, pady=1)
+
+    root.bind("<b>", lambda event: quick_select_button(home_button))
+    root.bind("<Right>", lambda event: focus_next())
+    root.bind("<Left>", lambda event: focus_previous())
 
     pass
+
+
+def theme_setting_page():
+    global DISPLAY_STATE
+    DISPLAY_STATE = 3
+    row_global_reset()
+    root.unbind("<b>")
+    root.unbind("<Right>")
+    root.unbind("<Left>")
+    root.unbind("<Up>")
+    root.unbind("<Down>")
+    frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
+    frm.grid(row=0, column=0, sticky="nsew")
+
+
+def time_setting_page():
+    global DISPLAY_STATE
+    DISPLAY_STATE = 4
+    row_global_reset()
+    root.unbind("<b>")
+    root.unbind("<Right>")
+    root.unbind("<Left>")
+    root.unbind("<Up>")
+    root.unbind("<Down>")
+    frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
+    frm.grid(row=0, column=0, sticky="nsew")
 
 
 if __name__ == '__main__':
