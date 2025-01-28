@@ -40,9 +40,8 @@ THEMES = [["Samurott",      "#0F3057",     "#FFD166",       "#3A5F78",       "#A
 
 def theme_writer(number):
     global THEME_NUMBER
-    with open(os.path.join(RESOURCE_PATH + "THEME#.txt"), "w") as file:
-        file.write(f"{number}")
-        print(f"wrote {number} to file")
+    with open(os.path.join(RESOURCE_PATH, "THEME#.txt"), 'w') as file:
+        file.write(str(number))
     THEME_NUMBER = theme_reader()
 
 
@@ -350,6 +349,9 @@ def theme_setting_page():
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
 
+    root.bind("<Left>", lambda event: focus_previous())
+    root.bind("<Right>", lambda event: focus_next())
+
 
 def time_setting_page():
     global DISPLAY_STATE
@@ -388,6 +390,7 @@ if __name__ == '__main__':
     root.bind("<Down>", lambda event: focus_next())
     root.bind("<Up>", lambda event: focus_previous())
     root.bind("<a>", lambda event: select_game())
-    root.bind("<f>", lambda event: theme_writer(5))
+    root.bind("<f>", lambda event: theme_writer(6))
+    # theme_writer(8)
 
     root.mainloop()

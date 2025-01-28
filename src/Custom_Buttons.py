@@ -1,7 +1,6 @@
 import tkinter as tk
 from main import THEMES, theme_reader
 
-theme = theme_reader()
 
 class MenuButton(tk.Button):
     def __init__(self, master=None, **kwargs):
@@ -14,10 +13,10 @@ class MenuButton(tk.Button):
             padx=10,                     # Changes Horizontal Padding
             pady=5,                      # Changes Vertical Padding
             font=("Tekton Pro Ext", 18),       # Sets the Font
-            foreground=THEMES[theme][5],          # Sets the Text Color
-            background=THEMES[theme][6],        # Sets the background color
-            activebackground=THEMES[theme][6],  # Sets the background color while it is clicked
-            activeforeground=THEMES[theme][5]   # Sets the text color while it is clicked
+            foreground=THEMES[theme_reader()][5],          # Sets the Text Color
+            background=THEMES[theme_reader()][6],        # Sets the background color
+            activebackground=THEMES[theme_reader()][6],  # Sets the background color while it is clicked
+            activeforeground=THEMES[theme_reader()][5]   # Sets the text color while it is clicked
         )
         # Bind Events
         # self.bind("<Leave>", self.on_leave)
@@ -27,11 +26,11 @@ class MenuButton(tk.Button):
 
     def on_focus(self, event):
         self.focus = True
-        self.config(background=THEMES[theme][7])
+        self.config(background=THEMES[theme_reader()][7])
 
     def off_focus(self, event):
         self.focus = False
-        self.config(background=THEMES[theme][6])
+        self.config(background=THEMES[theme_reader()][6])
 
     # def on_leave(self, event):
     #     if not self.focus:
@@ -47,19 +46,19 @@ class SelectionButton(MenuButton):
             relief=tk.SUNKEN,
             bd=4,
             font=("Ubuntu", 14),
-            foreground=THEMES[theme][2],
-            background=THEMES[theme][3],
-            activeforeground=THEMES[theme][2],
-            activebackground=THEMES[theme][3]
+            foreground=THEMES[theme_reader()][2],
+            background=THEMES[theme_reader()][3],
+            activeforeground=THEMES[theme_reader()][2],
+            activebackground=THEMES[theme_reader()][3]
         )
 
     def on_focus(self, event):
         self.focus = True
-        self.config(background=THEMES[theme][4])
+        self.config(background=THEMES[theme_reader()][4])
 
     def off_focus(self, event):
         self.focus = False
-        self.config(background=THEMES[theme][3])
+        self.config(background=THEMES[theme_reader()][3])
 
     # def on_leave(self, event):
     #     if not self.focus:
