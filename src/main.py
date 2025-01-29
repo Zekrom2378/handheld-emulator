@@ -28,15 +28,15 @@ DISPLAY_STATE = 0       # 0 - Home, 1 - View Games, 2 - Settings, 3 -Themes, 4 -
 THEMES = [["Samurott",      "#0F3057",     "#FFD166",       "#3A5F78",       "#A88F32",    "#FFD166",  "#005F73",   "#007EA7"],
           ["Emboar",        "#5E120D",     "#FFEB3B",       "#212121",       "#EE8700",    "#FFC400",  "#B71C1C",   "#e65100"],
           ["Serperior",     "#184A27",     "#F9A825",       "#5B7553",       "#FFD700",    "#F9A825",  "#2E7D32",   "#4CAF50"],
-          ["Haxorus",       "#2E3B3A",     "#F5F5F5",       "#5B734D",       "#99D6A1",    "#F5F5F5",  "#801f12",   "#6F35FC"],
-          ["Altaria",       "#A0C8E5",     "#FFFFFF",       "#4F9CB9",       "#7EC8D3",    "#FFFFFF",  "#3A8FBF",   "#5DA9D7"],
-          ["Gengar",        "#3A3A3D",     "#E9E9E9",       "#7A4E8D",       "#B799E6",    "#E9E9E9",  "#6A4C9C",   "#8E62B3"],
+          ["Ducklett",      "#A0C8E5",     "#FFFFFF",       "#4F9CB9",       "#FFD966",    "#FFFFFF",  "#3A8FBF",   "#5DA9D7"],
+          ["Excadrill",     "#3C3C3C",     "#FFFFFF",       "#2F2F2F",       "#A55D5D",    "#EAEAEA",  "#6B2E2E",   "#914343"],
+          ["Whirlipede",    "#3A3A3D",     "#E9E9E9",       "#7A4E8D",       "#B799E6",    "#E9E9E9",  "#6A4C9C",   "#8E62B3"],
           ["Zoroark",       "#2A2A2A",     "#F0F0F0",       "#5E5E5E",       "#9E2A2A",    "#D1D1D1",  "#7C2B2B",   "#9E4A4A"],
-          ["Diglett",       "#5D3D2E",     "#F0E8C0",       "#6B4A2D",       "#B48433",    "#F0E8C0",  "#7A5C41",   "#9E7B54"],
-          ["Zekrom",        "#0D0D0D",     "#E0E0E0",       "#1F2833",       "#0B8FAC",    "#76D7EA",  "#292929",   "#3D3D3D"],
-          ["Reshiram",      "#F8F8F8",     "#3B1C14",       "#FAE6C8",       "#FF9F33",    "#D96629",  "#E3E3E3",   "#CFCFCF"],
+          ["Haxorus",       "#2E3B3A",     "#F5F5F5",       "#5B734D",       "#99D6A1",    "#F5F5F5",  "#801f12",   "#6F35FC"],
           ["Galvantula",    "#2A2D45",     "#F8F8F8",       "#3B3E5E",       "#FFA500",    "#1B1B1B",  "#FFD200",   "#FFEE70"],
-          ["Druddigon",     "#263F58",     "#F1F1F1",       "#2F3F56",       "#D2504E",    "#F8F8F8",  "#9A1F26",   "#B04D4F"]
+          ["Druddigon",     "#263F58",     "#F1F1F1",       "#2F3F56",       "#D2504E",    "#F8F8F8",  "#9A1F26",   "#B04D4F"],
+          ["Zekrom",        "#0D0D0D",     "#E0E0E0",       "#1F2833",       "#0B8FAC",    "#76D7EA",  "#292929",   "#3D3D3D"],
+          ["Reshiram",      "#F8F8F8",     "#3B1C14",       "#FAE6C8",       "#FF9F33",    "#D96629",  "#E3E3E3",   "#CFCFCF"]
           ]
 
 
@@ -209,6 +209,7 @@ def goto_time():
 
 
 def goto_themes():
+    row_global_reset()
     theme_setting_page()
 
 
@@ -369,8 +370,9 @@ def settings_display_page():
 
 def theme_setting_page():
     global DISPLAY_STATE
+    global ROW_NUMBER
     DISPLAY_STATE = 3
-    row_global_reset()
+    # row_global_reset()
     root.unbind("<b>")
     root.unbind("<Right>")
     root.unbind("<Left>")
@@ -420,7 +422,7 @@ def theme_setting_page():
     root.bind("<Down>", lambda event: focus_next())
     root.bind("<b>", lambda event: goto_settings())
 
-    BUTTONS[0].focus_set()
+    BUTTONS[ROW_NUMBER].focus_set()
 
 
 def time_setting_page():
