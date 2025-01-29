@@ -19,7 +19,8 @@ class MenuButton(tk.Button):
             activeforeground=THEMES[theme_reader()][5]   # Sets the text color while it is clicked
         )
         # Bind Events
-        # self.bind("<Leave>", self.on_leave)
+        self.bind("<Leave>", self.on_leave)
+        self.bind("<Enter>", self.on_hover)
         self.bind("<FocusIn>", self.on_focus)
         self.bind("<FocusOut>", self.off_focus)
         self.focus = False
@@ -32,11 +33,12 @@ class MenuButton(tk.Button):
         self.focus = False
         self.config(background=THEMES[theme_reader()][6])
 
-    # def on_leave(self, event):
-    #     if not self.focus:
-    #         self.config(background=THEMES[THEME_NUMBER][6])  # Restore original color
-    #     else:
-    #         self.config(background=THEMES[THEME_NUMBER][7])
+    def on_leave(self, event):
+        self.off_focus(self)
+
+    def on_hover(self, event):
+        self.focus_set()
+        self.on_focus(self)
 
 
 class SelectionButton(MenuButton):

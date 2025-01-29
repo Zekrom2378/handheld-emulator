@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import *
 import Custom_Buttons as cb
 from game import Game
+import datetime
 # import navigation as nv
 
 """
@@ -165,6 +166,20 @@ def play_game(num):
     BOOK[PAGE][num].launch(ROOT_PATH, Emulators[BOOK[PAGE][num].type])
 
 
+def update_time(label, trflse, max):     # trflse is just a bool; True means up, False means down
+    print(label.cget("text"))
+    if trflse:
+        if int(label.cget("text")) == max:
+            label.config(text=f"{0:02}")
+        else:
+            label.config(text=f"{int(label.cget("text")) + 1:02}")
+    else:
+        if int(label.cget("text")) == 0:
+            label.config(text=f"{max:02}")
+        else:
+            label.config(text=f"{int(label.cget("text")) - 1:02}")
+
+
 def selection_button(frm, title, row_num):
     selection = cb.SelectionButton(frm, text=title, command=lambda: play_game(row_num - 1), anchor="w")
     selection.grid(row=row_num, column=1, columnspan=2, sticky="ew")
@@ -205,12 +220,16 @@ def goto_settings():
 
 
 def goto_time():
-    pass
+    time_setting_page()
 
 
 def goto_themes():
     row_global_reset()
     theme_setting_page()
+
+
+def goto_date():
+    pass
 
 
 def goto_calibrate():
@@ -262,11 +281,11 @@ def game_display_page(page_num):
             BUTTONS[0].focus_set()
         game_counter += 1
 
-    forward_button = cb.MenuButton(frm, text=">", command=next_page)
+    forward_button = cb.MenuButton(frm, text="˃", command=next_page)
     forward_button.grid(row=9, column=2, sticky="sw", pady=3)
     DIR_NAV.append(forward_button)
 
-    back_button = cb.MenuButton(frm, text="<", command=last_page)
+    back_button = cb.MenuButton(frm, text="˂", command=last_page)
     back_button.grid(row=9, column=1, sticky="se", pady=3)
     DIR_NAV.append(back_button)
 
@@ -326,11 +345,12 @@ def settings_display_page():
     root.unbind("<Down>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
-    frm.columnconfigure(0, weight=1)
-    frm.columnconfigure(1, weight=1)
-    frm.columnconfigure(2, weight=1)
-    frm.columnconfigure(3, weight=1)
-    frm.columnconfigure(4, weight=1)
+    frm.columnconfigure(0, weight=1)  # home button
+    frm.columnconfigure(1, weight=1)  # date button
+    frm.columnconfigure(2, weight=1)  # time button
+    frm.columnconfigure(3, weight=1)  # themes button
+    frm.columnconfigure(4, weight=1)  # calibrate button
+    frm.columnconfigure(5, weight=1)  # invis button
     frm.rowconfigure(0, weight=1)
     frm.rowconfigure(4, weight=1)
     BUTTONS.clear()
@@ -338,28 +358,31 @@ def settings_display_page():
     header = tk.Label(frm, text="System Settings", font=("System", 16), foreground="black", anchor="n", border=5)
     header.grid(row=0, column=0, columnspan=7, sticky="new")
 
+    date_button = cb.MenuButton(frm, text="   Date   ", command=goto_date)
+    date_button.grid(row=3, column=1, pady=3, padx=5)
+    date_button.focus_set()
+    BUTTONS.append(date_button)
+
     time_button = cb.MenuButton(frm, text="   Time   ", command=goto_time)
-    time_button.grid(row=3, column=1, pady=3, padx=5)
+    time_button.grid(row=3, column=2, pady=3, padx=5)
     time_button.focus_set()
     BUTTONS.append(time_button)
 
     theme_button = cb.MenuButton(frm, text="  Colors  ", command=goto_themes)
-    theme_button.grid(row=3, column=2, pady=3, padx=5)
+    theme_button.grid(row=3, column=3, pady=3, padx=5)
     BUTTONS.append(theme_button)
 
     calibration_button = cb.MenuButton(frm, text="Calibrate", anchor="center", command=goto_calibrate)
-    calibration_button.grid(row=3, column=3, pady=3, padx=5)
+    calibration_button.grid(row=3, column=4, pady=3, padx=5)
     BUTTONS.append(calibration_button)
 
     home_button = cb.MenuButton(frm, text="[<-", command=goto_home, padx=2, pady=2)
     home_button.config(padx=0, pady=0, font=("System", 18))
     home_button.grid(row=4, column=0, sticky="sw", padx=3, pady=1)
 
-    invis_button = cb.MenuButton(frm, text="[<-", command=None, padx=2, pady=2)
-    invis_button.config(padx=0, pady=0, relief=tk.FLAT, background=THEMES[THEME_NUMBER][1], font=("System", 18),
-                        activebackground=THEMES[THEME_NUMBER][1], foreground=THEMES[THEME_NUMBER][1],
-                        activeforeground=THEMES[THEME_NUMBER][1])
-    invis_button.grid(row=4, column=4, sticky="se", padx=3, pady=1)
+    right_spacer = tk.Label(frm, text="___", font=("System", 18), padx=2, pady=2, foreground=THEMES[THEME_NUMBER][1],
+                            background=THEMES[THEME_NUMBER][1])
+    right_spacer.grid(row=4, column=5, sticky="se", padx=3, pady=1)
 
     root.bind("<b>", lambda event: quick_select_button(home_button))
     root.bind("<Right>", lambda event: focus_next())
@@ -390,31 +413,18 @@ def theme_setting_page():
 
     BUTTONS.clear()
 
-    # SPACERS
-    for i in range(9):
-        if i % 2 == 0:
-            tk.Label(frm, text='___', foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=3, column=i)
-            tk.Label(frm, text='___', foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=5, column=i)
-            tk.Label(frm, text='___', foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=7, column=i)
-    tk.Label(frm, text="_", foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=2, columnspan=9)
-    tk.Label(frm, text="_", foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=4, columnspan=9)
-    tk.Label(frm, text="_", foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=6, columnspan=9)
-    tk.Label(frm, text="_", foreground=THEMES[THEME_NUMBER][1], background=THEMES[THEME_NUMBER][1]).grid(row=8, columnspan=9)
-
     for i in range(number_of_rows_on_page()):
         butt = cb.SelectionButton(frm, text=THEMES[i][0], font=("Terminal", 10), command=set_theme, anchor="center")
-        butt.grid(row=((i % 3) * 2) + 3, column=((i // 3) * 2) + 1, sticky="ew")
+        butt.grid(row=((i % 3) * 2) + 3, column=((i // 3) * 2) + 1, sticky="ew", padx=2, pady=8)
         BUTTONS.append(butt)
 
     home_button = cb.MenuButton(frm, text="[<-", command=goto_settings, padx=2, pady=2)
     home_button.config(padx=0, pady=0, font=("System", 18))
     home_button.grid(row=8, column=0, sticky="sw", padx=3, pady=1)
 
-    invis_button = cb.MenuButton(frm, text="[<-", command=None, padx=2, pady=2)
-    invis_button.config(padx=0, pady=0, relief=tk.FLAT, background=THEMES[THEME_NUMBER][1], font=("System", 18),
-                        activebackground=THEMES[THEME_NUMBER][1], foreground=THEMES[THEME_NUMBER][1],
-                        activeforeground=THEMES[THEME_NUMBER][1])
-    invis_button.grid(row=8, column=8, sticky="se", padx=3, pady=1)
+    right_spacer = tk.Label(frm, text="___", font=("System", 18), padx=2, pady=2, foreground=THEMES[THEME_NUMBER][1],
+                            background=THEMES[THEME_NUMBER][1])
+    right_spacer.grid(row=8, column=8, sticky="se", padx=3, pady=1)
 
     root.bind("<Left>", lambda event: focus_left())
     root.bind("<Right>", lambda event: focus_right())
@@ -446,6 +456,51 @@ def time_setting_page():
     frm.rowconfigure(6, weight=1)
 
 
+
+    # frm.columnconfigure(0, weight=1)
+    frm.columnconfigure(1, weight=1)
+    frm.columnconfigure(2, weight=1)
+    frm.columnconfigure(3, weight=1)
+    frm.columnconfigure(4, weight=1)
+    frm.columnconfigure(0, weight=1)
+    frm.rowconfigure(1, weight=1)
+    frm.rowconfigure(5, weight=1)
+    # frm.columnconfigure(4, weight=1)
+
+    header = tk.Label(frm, text="Set the current date", font=("System", 16), foreground="black", anchor="center", border=5)
+    header.grid(row=0, column=0, columnspan=6, sticky="ewn")
+
+    hours = tk.Label(frm, text="12", font=("Terminal", 46), foreground=THEMES[THEME_NUMBER][2],
+                     background=THEMES[THEME_NUMBER][3])
+    hours.grid(row=3, column=1, padx=5, pady=2, sticky="news")
+
+    increase_hour = cb.MenuButton(frm, text="˄", font=("Terminal", 18), command=lambda: update_time(hours, True, 23),
+                                  anchor="center")
+    increase_hour.grid(row=2, column=1, padx=5, pady=4, sticky="news")
+
+    decrease_hour = cb.MenuButton(frm, text="˅", font=("Terminal", 18), command=lambda: update_time(hours, False, 23),
+                                  anchor="center")
+    decrease_hour.grid(row=4, column=1, padx=5, pady=4, sticky="news")
+
+    minutes = tk.Label(frm, text="00", font=("Terminal", 46), foreground=THEMES[THEME_NUMBER][2],
+                       background=THEMES[THEME_NUMBER][3])
+    minutes.grid(row=3, column=3, padx=5, pady=2, sticky="news")
+
+    increase_minute = cb.MenuButton(frm, text="˄", font=("Terminal", 18), command=lambda: update_time(minutes, True, 59),
+                                  anchor="center")
+    increase_minute.grid(row=2, column=3, padx=5, pady=4, sticky="news")
+
+    decrease_minute = cb.MenuButton(frm, text="˅", font=("Terminal", 18), command=lambda: update_time(minutes, False, 59),
+                                  anchor="center")
+    decrease_minute.grid(row=4, column=3, padx=5, pady=4, sticky="news")
+
+    home_button = cb.MenuButton(frm, text="[<-", command=goto_settings, padx=2, pady=2)
+    home_button.config(padx=0, pady=0, font=("System", 18))
+    home_button.grid(row=6, column=0, sticky="sw", padx=3, pady=1)
+
+    next_button = cb.MenuButton(frm, text="->]", command=None, padx=2, pady=2)
+    next_button.config(padx=0, pady=0, font=("System", 18))
+    next_button.grid(row=6, column=4, sticky="se", padx=3, pady=1)
 
 
 if __name__ == '__main__':
