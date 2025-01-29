@@ -446,16 +446,6 @@ def time_setting_page():
     root.unbind("<Down>")
     frm = tk.Frame(root, bg=THEMES[THEME_NUMBER][1])
     frm.grid(row=0, column=0, sticky="nsew")
-    frm.columnconfigure(0, weight=1)
-    frm.columnconfigure(2, weight=1)
-    frm.columnconfigure(4, weight=1)
-    frm.columnconfigure(6, weight=1)
-    frm.rowconfigure(1, weight=1)
-    frm.rowconfigure(3, weight=1)
-    frm.rowconfigure(5, weight=1)
-    frm.rowconfigure(6, weight=1)
-
-
 
     # frm.columnconfigure(0, weight=1)
     frm.columnconfigure(1, weight=1)
