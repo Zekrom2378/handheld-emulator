@@ -167,7 +167,6 @@ def play_game(num):
 
 
 def update_time(label, trflse, max):     # trflse is just a bool; True means up, False means down
-    print(label.cget("text"))
     if trflse:
         if int(label.cget("text")) == max:
             label.config(text=f"{0:02}")
@@ -477,11 +476,11 @@ def time_setting_page():
     minutes.grid(row=3, column=3, padx=5, pady=2, sticky="news")
 
     increase_minute = cb.MenuButton(frm, text="˄", font=("Terminal", 18), command=lambda: update_time(minutes, True, 59),
-                                  anchor="center")
+                                    anchor="center")
     increase_minute.grid(row=2, column=3, padx=5, pady=4, sticky="news")
 
     decrease_minute = cb.MenuButton(frm, text="˅", font=("Terminal", 18), command=lambda: update_time(minutes, False, 59),
-                                  anchor="center")
+                                    anchor="center")
     decrease_minute.grid(row=4, column=3, padx=5, pady=4, sticky="news")
 
     home_button = cb.MenuButton(frm, text="[<-", command=goto_settings, padx=2, pady=2)
