@@ -24,7 +24,7 @@ PAGE = 0
 BUTTONS = []
 ROW_NUMBER = 0
 DIR_NAV = []
-DISPLAY_STATE = 0       # 0 - Home, 1 - View Games, 2 - Settings, 3 -Themes, 4 - Date/Time, 5 - TBD
+DISPLAY_STATE = 0       # 0 - Home, 1 - View Games, 2 - Settings, 3 -Themes, 4 - Time, 5 - Date
 #         [ Theme Name    | Background | Game Sel Text | Game Sel Button | Game Sel HiLi | Menu Text | Menu Button | Menu HiLi]
 THEMES = [["Samurott",      "#0F3057",     "#FFD166",       "#3A5F78",       "#A88F32",    "#FFD166",  "#005F73",   "#007EA7"],
           ["Emboar",        "#5E120D",     "#FFEB3B",       "#212121",       "#EE8700",    "#FFC400",  "#B71C1C",   "#e65100"],
@@ -171,12 +171,12 @@ def update_time(label, trflse, max):     # trflse is just a bool; True means up,
         if int(label.cget("text")) == max:
             label.config(text=f"{0:02}")
         else:
-            label.config(text=f"{int(label.cget("text")) + 1:02}")
+            label.config(text=f'{int(label.cget("text")) + 1:02}')
     else:
         if int(label.cget("text")) == 0:
             label.config(text=f"{max:02}")
         else:
-            label.config(text=f"{int(label.cget("text")) - 1:02}")
+            label.config(text=f'{int(label.cget("text")) - 1:02}')
 
 
 def selection_button(frm, title, row_num):
