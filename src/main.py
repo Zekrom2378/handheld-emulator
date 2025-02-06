@@ -493,6 +493,7 @@ def time_setting_page():
 
 
 if __name__ == '__main__':
+    print("Starting UI")
     THEME_NUMBER = theme_reader()
 
     for rom_type in Emulators.keys():
@@ -502,12 +503,16 @@ if __name__ == '__main__':
                 BOOK.append([])
             BOOK[len(BOOK) - 1].append(Game(title_grabber(file), file, rom_type))
 
+    print("Emulators Compiled...")
+
     root = Tk()
     root.geometry("800x480")
     # root.attributes('-fullscreen', True)   # Disable while testing, Enable while on actual 800x480 screen.
     root.configure(bg=THEMES[THEME_NUMBER][1])
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
+
+    print("Root Window created...")
 
     home_display_page()
 
@@ -519,4 +524,7 @@ if __name__ == '__main__':
     root.bind("<f>", lambda event: theme_writer(6))
     # theme_writer(8)
 
+    print("Buttons Assigned...")
+
+    print("Starting...")
     root.mainloop()
